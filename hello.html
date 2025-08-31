@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tools Pack - All-in-One Utility Website</title>
+    <meta name="description" content="A collection of 13+ free, fast, and offline-ready web development and productivity tools. Includes a calculator, unit converter, JSON formatter, image resizer, and more.">
+    
+    <!-- Self-contained SVG Favicon -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M25,10 h50 v15 h-50 z' fill='%2300f5d4'/%3E%3Cpath d='M10,35 h80 v15 h-80 z' fill='%2300f5d4'/%3E%3Cpath d='M25,60 h50 v15 h-50 z' fill='%2300f5d4'/%3E%3Cpath d='M10,85 h80 v5 h-80 z' fill='%23a2a2ff'/%3E%3C/svg%3E">
+
+    <style>
+        /* CSS Reset and Global Styles */
+        :root {
+            --bg-primary: #1E1E2F;
+            --bg-secondary: #2A2A40;
+            --text-primary: #E0E0FF;
+            --text-secondary: #A2A2FF;
+            --accent: #00F5D4;
+            --accent-dark: #00C4A9;
+            --border-color: #4A4A6A;
+            --error: #FF4757;
+            --success: #2ED573;
+            --font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: var(--font-family);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--bg-secondary);
+            border-radius: 5px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--border-color);
+        }
+
+        /* Main Layout */
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+
+        .site-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1.5rem;
+        }
+
+        .site-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .search-container {
+            position: relative;
+            flex-grow: 1;
+            max-width: 500px;
+        }
+        
+        #search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem; /* Left padding for icon */
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        #search-input::placeholder {
+            color: var(--text-secondary);
+        }
+        #search-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(0, 245, 212, 0.2);
+        }
+        .search-container .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            pointer-events: none;
+        }
+
+        .command-palette-hint {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            border: 1px solid var(--border-color);
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+        }
+        
+        /* Ad Placeholders */
+        .ad-placeholder {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--bg-secondary);
+            color: var(--text-secondary);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            text-align: center;
+            border: 1px dashed var(--border-color);
+        }
+        .ad-placeholder-header {
+            width: 100%;
+            min-height: 90px;
+            margin: 0 auto 2rem;
+        }
+        
+        /* Tools Grid */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* Individual Tool Card */
+        .tool-card {
+            background-color: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid transparent;
+            transition: all 0.3s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Fix for children with margins */
+        }
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            border-color: var(--border-color);
+        }
+        .tool-card h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .tool-card h2 .icon {
+            color: var(--accent);
+            font-size: 1.5rem;
+        }
+        .tool-card .tool-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Generic Form Elements */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        .form-control, select, textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .form-control:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(0, 245, 212, 0.2);
+        }
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--bg-primary);
+            background-color: var(--accent);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        .btn:hover {
+            background-color: var(--accent-dark);
+            transform: translateY(-2px);
+        }
+        .btn:disabled {
+            background-color: var(--border-color);
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-secondary {
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+        .btn-secondary:hover {
+            background-color: var(--border-color);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        .button-group .btn {
+            flex-grow: 1;
+        }
+
+        /* Specific Tool Styles */
+        /* 1. Calculator */
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+        }
+        #calculator-display {
+            grid-column: 1 / -1;
+            background-color: var(--bg-primary);
+            padding: 1rem;
+            text-align: right;
+            font-size: 2rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            word-wrap: break-word;
+            word-break: break-all;
+            height: 70px;
+        }
+        .calculator-grid .btn {
+            font-size: 1.25rem;
+            padding: 1rem 0;
+        }
+        .calculator-grid .btn.op {
+            background-color: var(--border-color);
+            color: var(--accent);
+        }
+        .calculator-grid .btn.op:hover {
+            background-color: #5a5a7a;
+        }
+        .calculator-grid .btn.equals {
+            grid-column: 4 / 5;
+            grid-row: 4 / 6;
+        }
+        .calculator-grid .btn.zero {
+            grid-column: 1 / 3;
+        }
+        
+        /* 7. Password Generator */
+        .password-output-container {
+            display: flex;
+            background-color: var(--bg-primary);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            align-items: center;
+        }
+        #password-output {
+            flex-grow: 1;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.1rem;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+        .copy-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1.25rem;
+            padding: 0.5rem;
+        }
+        .copy-btn:hover {
+            color: var(--accent);
+        }
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        .option {
+            display: flex;
+            align-items: center;
+        }
+        .option input[type="checkbox"] {
+             width: 1.2em;
+             height: 1.2em;
+             margin-right: 0.5em;
+        }
+        .length-slider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .length-slider input[type="range"] {
+            flex-grow: 1;
+        }
+
+        /* 10. Image Resizer */
+        #image-preview-container {
+            width: 100%;
+            min-height: 150px;
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 1rem;
+            background-color: var(--bg-primary);
+            color: var(--text-secondary);
+        }
+        #image-preview {
+            max-width: 100%;
+            max-height: 200px;
+            display: none;
+        }
+        
+        /* 11. Color Picker */
+        .color-picker-container {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        .color-input-group {
+            flex: 1;
+        }
+        .color-input-group input[type="color"] {
+            width: 100%;
+            height: 40px;
+            padding: 0;
+            border: none;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        #contrast-preview {
+            padding: 2rem;
+            border-radius: 8px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        /* 12. Stopwatch & Timer */
+        .timer-tabs {
+            display: flex;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .timer-tab {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px;
+        }
+        .timer-tab.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+        }
+        .timer-panel {
+            display: none;
+        }
+        .timer-panel.active {
+            display: block;
+        }
+        .timer-display {
+            font-size: 3rem;
+            text-align: center;
+            font-family: 'Courier New', Courier, monospace;
+            margin-bottom: 1rem;
+        }
+        #laps-container {
+            max-height: 150px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        /* 13. Quick Notes */
+        #quick-notes-area {
+            height: 100%;
+            min-height: 300px;
+            flex-grow: 1;
+        }
+        
+        /* Command Palette */
+        #command-palette-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 999;
+            display: none; /* Toggled with JS */
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        #command-palette {
+            position: fixed;
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%) scale(0.95);
+            width: 90%;
+            max-width: 600px;
+            background-color: var(--bg-secondary);
+            border-radius: 12px;
+            z-index: 1000;
+            overflow: hidden;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+            display: none; /* Toggled with JS */
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        #command-palette-overlay.visible, #command-palette.visible {
+            display: block;
+            opacity: 1;
+        }
+        #command-palette.visible {
+            transform: translateX(-50%) scale(1);
+        }
+        #command-palette-input {
+            width: 100%;
+            padding: 1rem;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-size: 1.2rem;
+        }
+        #command-palette-input:focus {
+            outline: none;
+        }
+        #command-palette-results {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .command-item {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .command-item:hover, .command-item.selected {
+            background-color: var(--border-color);
+            color: var(--accent);
+        }
+        
+        /* Utility Classes */
+        .hidden {
+            display: none !important;
+        }
+        .output-box {
+            background-color: var(--bg-primary);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            min-height: 50px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .status-message {
+            margin-top: 1rem;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+        .status-message.success {
+            background-color: rgba(46, 213, 115, 0.2);
+            color: var(--success);
+        }
+        .status-message.error {
+            background-color: rgba(255, 71, 87, 0.2);
+            color: var(--error);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .site-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .search-container {
+                width: 100%;
+            }
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+            .timer-display {
+                font-size: 2.5rem;
+            }
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header class="site-header">
+            <h1 class="site-title">Tools Pack</h1>
+            <div class="search-container">
+                <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" id="search-input" placeholder="Search for a tool...">
+            </div>
+            <div class="command-palette-hint">
+                Press <kbd>Ctrl</kbd> + <kbd>K</kbd>
+            </div>
+        </header>
+
+        <!-- Google Ads Ready Placeholder -->
+        <div class="ad-placeholder ad-placeholder-header">Header Ad (e.g., 728x90)</div>
+
+        <main class="tools-grid" id="tools-grid">
+            <!-- Tools will be injected here by JavaScript -->
+        </main>
+    </div>
+
+    <!-- Command Palette Modal -->
+    <div id="command-palette-overlay"></div>
+    <div id="command-palette" role="dialog" aria-modal="true" aria-labelledby="command-palette-label">
+        <div class="search-container">
+            <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="command-palette-input" placeholder="Type a command or search...">
+        </div>
+        <div id="command-palette-results"></div>
+    </div>
+
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // --- CORE DATA AND TOOL DEFINITIONS --- //
+        const tools = [
+            { 
+                id: 'calculator', 
+                title: 'Calculator', 
+                icon: '🧮',
+                keywords: 'math arithmetic add subtract multiply divide',
+                content: `
+                    <div id="calculator-display" class="output-box">0</div>
+                    <div class="calculator-grid">
+                        <button class="btn op">C</button><button class="btn op">(</button><button class="btn op">)</button><button class="btn op">/</button>
+                        <button class="btn">7</button><button class="btn">8</button><button class="btn">9</button><button class="btn op">*</button>
+                        <button class="btn">4</button><button class="btn">5</button><button class="btn">6</button><button class="btn op">-</button>
+                        <button class="btn">1</button><button class="btn">2</button><button class="btn">3</button><button class="btn op">+</button>
+                        <button class="btn zero">0</button><button class="btn">.</button><button class="btn equals">=</button>
+                    </div>
+                `
+            },
+            {
+                id: 'unit-converter',
+                title: 'Unit Converter',
+                icon: '📏',
+                keywords: 'length weight temperature meter feet kg lbs celsius fahrenheit',
+                content: `
+                    <div class="form-group">
+                        <label for="uc-category">Category</label>
+                        <select id="uc-category" class="form-control">
+                            <option value="length">Length</option>
+                            <option value="weight">Weight</option>
+                            <option value="temperature">Temperature</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="uc-input">Value</label>
+                        <input type="number" id="uc-input" class="form-control" value="1">
+                    </div>
+                    <div class="form-group" style="display: flex; gap: 1rem; align-items: center;">
+                        <select id="uc-from" class="form-control" style="flex: 1;"></select>
+                        <span>to</span>
+                        <select id="uc-to" class="form-control" style="flex: 1;"></select>
+                    </div>
+                    <div class="output-box" id="uc-output"></div>
+                `
+            },
+            {
+                id: 'text-utilities',
+                title: 'Text Utilities',
+                icon: '✍️',
+                keywords: 'uppercase lowercase word count characters remove spaces',
+                content: `
+                    <textarea id="text-util-input" class="form-control" placeholder="Enter your text here..."></textarea>
+                    <div class="button-group" style="margin-top: 1rem;">
+                        <button class="btn" data-action="upper">Uppercase</button>
+                        <button class="btn" data-action="lower">Lowercase</button>
+                        <button class="btn" data-action="no-space">Remove Spaces</button>
+                    </div>
+                    <div class="output-box" id="text-util-output" style="margin-top: 1rem; display: flex; gap: 1.5rem; justify-content: space-around;">
+                        <span>Words: <strong id="word-count">0</strong></span>
+                        <span>Chars: <strong id="char-count">0</strong></span>
+                    </div>
+                `
+            },
+            {
+                id: 'base64',
+                title: 'Base64 Encoder/Decoder',
+                icon: '🔐',
+                keywords: 'encode decode binary text',
+                content: `
+                    <textarea id="base64-input" class="form-control" placeholder="Input text or Base64 string..."></textarea>
+                    <div class="button-group" style="margin-top: 1rem;">
+                        <button class="btn" id="base64-encode">Encode</button>
+                        <button class="btn" id="base64-decode">Decode</button>
+                    </div>
+                    <textarea id="base64-output" class="form-control" style="margin-top: 1rem;" readonly placeholder="Output..."></textarea>
+                    <div id="base64-status" class="status-message hidden"></div>
+                `
+            },
+            {
+                id: 'url-encoder',
+                title: 'URL Encoder/Decoder',
+                icon: '🔗',
+                keywords: 'encode decode uri component link',
+                content: `
+                    <textarea id="url-input" class="form-control" placeholder="Input URL or string..."></textarea>
+                    <div class="button-group" style="margin-top: 1rem;">
+                        <button class="btn" id="url-encode">Encode</button>
+                        <button class="btn" id="url-decode">Decode</button>
+                    </div>
+                    <textarea id="url-output" class="form-control" style="margin-top: 1rem;" readonly placeholder="Output..."></textarea>
+                `
+            },
+            {
+                id: 'json-formatter',
+                title: 'JSON Formatter & Validator',
+                icon: '📄',
+                keywords: 'format validate beautify lint object notation',
+                content: `
+                    <textarea id="json-input" class="form-control" style="min-height: 200px" placeholder="Paste your JSON here..."></textarea>
+                    <div id="json-status" class="status-message hidden" style="margin-top: 1rem;"></div>
+                    <pre id="json-output-pre" class="output-box hidden" style="margin-top: 1rem;"><code id="json-output"></code></pre>
+                `
+            },
+            {
+                id: 'password-generator',
+                title: 'Password Generator',
+                icon: '🔑',
+                keywords: 'secure random password key',
+                content: `
+                    <div class="password-output-container">
+                        <span id="password-output">Click Generate...</span>
+                        <button id="password-copy-btn" class="copy-btn" aria-label="Copy password">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                        </button>
+                    </div>
+                    <div class="form-group length-slider">
+                        <label for="pass-length">Length: <span id="pass-length-val">16</span></label>
+                        <input type="range" id="pass-length" min="8" max="64" value="16" class="form-control">
+                    </div>
+                    <div class="options-grid">
+                        <div class="option"><input type="checkbox" id="opt-upper" checked><label for="opt-upper">Uppercase</label></div>
+                        <div class="option"><input type="checkbox" id="opt-lower" checked><label for="opt-lower">Lowercase</label></div>
+                        <div class="option"><input type="checkbox" id="opt-numbers" checked><label for="opt-numbers">Numbers</label></div>
+                        <div class="option"><input type="checkbox" id="opt-symbols" checked><label for="opt-symbols">Symbols</label></div>
+                    </div>
+                    <button class="btn" id="generate-password-btn" style="width: 100%; margin-top: 1rem;">Generate</button>
+                `
+            },
+            {
+                id: 'uuid-generator',
+                title: 'UUID Generator',
+                icon: '🆔',
+                keywords: 'guid unique identifier v4',
+                content: `
+                    <div class="password-output-container">
+                        <span id="uuid-output">Click Generate...</span>
+                        <button id="uuid-copy-btn" class="copy-btn" aria-label="Copy UUID">
+                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                        </button>
+                    </div>
+                    <button class="btn" id="generate-uuid-btn" style="width: 100%;">Generate UUID v4</button>
+                `
+            },
+            {
+                id: 'hash-generator',
+                title: 'Hash Generator (SHA-256)',
+                icon: '🌀',
+                keywords: 'crypto sha256 checksum webcrypto',
+                content: `
+                    <textarea id="hash-input" class="form-control" placeholder="Enter text to hash..."></textarea>
+                    <div class="output-box" id="hash-output" style="margin-top: 1rem;">Output will appear here</div>
+                `
+            },
+            {
+                id: 'image-resizer',
+                title: 'Image Resizer & Compressor',
+                icon: '🖼️',
+                keywords: 'compress resize jpeg png image picture',
+                content: `
+                    <input type="file" id="image-input" class="form-control" accept="image/*">
+                    <div id="image-preview-container"><span id="image-placeholder-text">Select an image</span><img id="image-preview" src="" alt="Image preview"></div>
+                    <div id="image-options" class="hidden">
+                        <div class="form-group"><label for="img-max-dim">Max Dimension (px)</label><input type="number" id="img-max-dim" class="form-control" value="1280"></div>
+                        <div class="form-group"><label for="img-quality">Quality (<span id="img-quality-val">0.8</span>)</label><input type="range" id="img-quality" min="0.1" max="1" step="0.05" value="0.8" class="form-control"></div>
+                        <div class="output-box" id="image-info"></div>
+                        <a href="#" id="download-image-btn" class="btn hidden" download="resized-image.jpg" style="width: 100%; margin-top: 1rem;">Download Image</a>
+                    </div>
+                `
+            },
+            {
+                id: 'color-tool',
+                title: 'Color Picker & Contrast Checker',
+                icon: '🎨',
+                keywords: 'picker contrast accessibility wcag color',
+                content: `
+                    <div class="color-picker-container">
+                        <div class="color-input-group"><label for="color-text">Text Color</label><input type="color" id="color-text" value="#ffffff"></div>
+                        <div class="color-input-group"><label for="color-bg">Background Color</label><input type="color" id="color-bg" value="#2A2A40"></div>
+                    </div>
+                    <div id="contrast-preview"><p style="font-size: 1.2rem; font-weight: bold;">Contrast Preview Text</p></div>
+                    <div class="output-box" id="contrast-output" style="margin-top: 1rem; text-align: center;"></div>
+                `
+            },
+            {
+                id: 'stopwatch-timer',
+                title: 'Stopwatch & Timer',
+                icon: '⏱️',
+                keywords: 'stopwatch countdown timer lap',
+                content: `
+                    <div class="timer-tabs"><div class="timer-tab active" data-tab="stopwatch">Stopwatch</div><div class="timer-tab" data-tab="timer">Countdown</div></div>
+                    <div id="stopwatch-panel" class="timer-panel active">
+                        <div class="timer-display" id="stopwatch-display">00:00:00.000</div>
+                        <div class="button-group"><button class="btn" id="sw-start-pause">Start</button><button class="btn btn-secondary" id="sw-reset">Reset</button><button class="btn btn-secondary" id="sw-lap">Lap</button></div>
+                        <div id="laps-container" style="margin-top: 1rem;"></div>
+                    </div>
+                    <div id="timer-panel" class="timer-panel">
+                        <div class="timer-display" id="countdown-display">00:00:00</div>
+                        <div id="countdown-inputs" style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                            <input type="number" class="form-control" id="cd-hours" placeholder="H" min="0" max="99">
+                            <input type="number" class="form-control" id="cd-minutes" placeholder="M" min="0" max="59">
+                            <input type="number" class="form-control" id="cd-seconds" placeholder="S" min="0" max="59">
+                        </div>
+                        <div class="button-group"><button class="btn" id="cd-start-pause">Start</button><button class="btn btn-secondary" id="cd-reset">Reset</button></div>
+                    </div>
+                `
+            },
+            {
+                id: 'quick-notes',
+                title: 'Quick Notes',
+                icon: '📝',
+                keywords: 'notes scratchpad localstorage persistent text',
+                content: `
+                    <div class="tool-content" style="height: 100%;">
+                        <textarea id="quick-notes-area" class="form-control" placeholder="Your notes are saved automatically in your browser..."></textarea>
+                    </div>
+                `
+            },
+        ];
+
+        const toolsGrid = document.getElementById('tools-grid');
+
+        // --- RENDER ALL TOOLS ON PAGE LOAD --- //
+        function renderTools() {
+            tools.forEach(tool => {
+                const card = document.createElement('article');
+                card.className = 'tool-card';
+                card.id = `tool-${tool.id}`;
+                card.dataset.title = tool.title.toLowerCase();
+                card.dataset.keywords = tool.keywords;
+
+                card.innerHTML = `
+                    <h2>
+                        <span class="icon">${tool.icon}</span>
+                        ${tool.title}
+                    </h2>
+                    <div class="tool-content">${tool.content}</div>
+                `;
+                toolsGrid.appendChild(card);
+            });
+        }
+        
+        renderTools();
+        initAllTools();
+
+        // --- UI LOGIC (SEARCH & COMMAND PALETTE) --- //
+        const searchInput = document.getElementById('search-input');
+        const toolCards = document.querySelectorAll('.tool-card');
+
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase().trim();
+            toolCards.forEach(card => {
+                const title = card.dataset.title;
+                const keywords = card.dataset.keywords;
+                const isVisible = title.includes(searchTerm) || keywords.includes(searchTerm);
+                card.style.display = isVisible ? '' : 'none';
+            });
+        });
+        
+        // Command Palette Logic
+        const cpOverlay = document.getElementById('command-palette-overlay');
+        const cpModal = document.getElementById('command-palette');
+        const cpInput = document.getElementById('command-palette-input');
+        const cpResults = document.getElementById('command-palette-results');
+        let selectedCommandIndex = 0;
+
+        const openCommandPalette = () => {
+            cpOverlay.classList.add('visible');
+            cpModal.classList.add('visible');
+            cpInput.value = '';
+            populateCommandResults('');
+            cpInput.focus();
+        };
+
+        const closeCommandPalette = () => {
+            cpOverlay.classList.remove('visible');
+            cpModal.classList.remove('visible');
+        };
+
+        const populateCommandResults = (filter = '') => {
+            cpResults.innerHTML = '';
+            const filteredTools = tools.filter(t => t.title.toLowerCase().includes(filter.toLowerCase()));
+            selectedCommandIndex = 0;
+            
+            filteredTools.forEach((tool, index) => {
+                const item = document.createElement('div');
+                item.className = 'command-item';
+                if (index === selectedCommandIndex) item.classList.add('selected');
+                item.textContent = tool.title;
+                item.dataset.toolId = tool.id;
+                item.addEventListener('click', () => executeCommand(tool.id));
+                cpResults.appendChild(item);
+            });
+        };
+        
+        const executeCommand = (toolId) => {
+            const targetTool = document.getElementById(`tool-${toolId}`);
+            if (targetTool) {
+                targetTool.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            closeCommandPalette();
+        };
+        
+        const updateSelectedCommand = (direction) => {
+            const items = cpResults.querySelectorAll('.command-item');
+            if (items.length === 0) return;
+            
+            items[selectedCommandIndex].classList.remove('selected');
+            selectedCommandIndex = (selectedCommandIndex + direction + items.length) % items.length;
+            items[selectedCommandIndex].classList.add('selected');
+            items[selectedCommandIndex].scrollIntoView({ block: 'nearest' });
+        };
+        
+        document.addEventListener('keydown', (e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+                e.preventDefault();
+                openCommandPalette();
+            }
+            if (e.key === 'Escape' && cpModal.classList.contains('visible')) {
+                closeCommandPalette();
+            }
+        });
+
+        cpInput.addEventListener('input', () => populateCommandResults(cpInput.value));
+        cpInput.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                updateSelectedCommand(1);
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                updateSelectedCommand(-1);
+            } else if (e.key === 'Enter') {
+                const selectedItem = cpResults.querySelector('.command-item.selected');
+                if (selectedItem) {
+                    executeCommand(selectedItem.dataset.toolId);
+                }
+            }
+        });
+
+        cpOverlay.addEventListener('click', closeCommandPalette);
+
+
+        // --- INDIVIDUAL TOOL INITIALIZATION --- //
+        function initAllTools() {
+            // Helper for query selecting within a tool card
+            const q = (toolId, selector) => document.querySelector(`#tool-${toolId} ${selector}`);
+
+            // 1. Calculator
+            const calcDisplay = q('calculator', '#calculator-display');
+            let calcExpr = '';
+            q('calculator', '.calculator-grid').addEventListener('click', (e) => {
+                if (e.target.tagName !== 'BUTTON') return;
+                const val = e.target.textContent;
+
+                if (val === 'C') {
+                    calcExpr = '';
+                    calcDisplay.textContent = '0';
+                } else if (val === '=') {
+                    try {
+                        // A slightly safer eval by restricting characters
+                        if (/[^0-9+\-*/().]/.test(calcExpr)) throw new Error('Invalid characters');
+                        const result = new Function(`return ${calcExpr}`)();
+                        calcDisplay.textContent = result;
+                        calcExpr = String(result);
+                    } catch {
+                        calcDisplay.textContent = 'Error';
+                        calcExpr = '';
+                    }
+                } else {
+                    if (calcExpr === '' && '/*+.)'.includes(val)) return;
+                    if (calcDisplay.textContent === '0' && !'/*+-.()'.includes(val)) {
+                        calcExpr = val;
+                    } else {
+                        calcExpr += val;
+                    }
+                    calcDisplay.textContent = calcExpr;
+                }
+            });
+
+            // 2. Unit Converter
+            const ucCategory = q('unit-converter', '#uc-category');
+            const ucInput = q('unit-converter', '#uc-input');
+            const ucFrom = q('unit-converter', '#uc-from');
+            const ucTo = q('unit-converter', '#uc-to');
+            const ucOutput = q('unit-converter', '#uc-output');
+            const units = {
+                length: { 'Meter (m)': 1, 'Kilometer (km)': 1000, 'Centimeter (cm)': 0.01, 'Mile (mi)': 1609.34, 'Foot (ft)': 0.3048, 'Inch (in)': 0.0254 },
+                weight: { 'Kilogram (kg)': 1, 'Gram (g)': 0.001, 'Pound (lb)': 0.453592, 'Ounce (oz)': 0.0283495 },
+                temperature: { 'Celsius (°C)': 'c', 'Fahrenheit (°F)': 'f', 'Kelvin (K)': 'k' }
+            };
+            const populateUnits = () => {
+                const category = ucCategory.value;
+                ucFrom.innerHTML = ucTo.innerHTML = '';
+                Object.keys(units[category]).forEach(unit => {
+                    ucFrom.innerHTML += `<option value="${units[category][unit]}">${unit}</option>`;
+                    ucTo.innerHTML += `<option value="${units[category][unit]}">${unit}</option>`;
+                });
+                ucTo.selectedIndex = 1;
+                convertUnits();
+            };
+            const convertUnits = () => {
+                const category = ucCategory.value;
+                const val = parseFloat(ucInput.value);
+                const from = ucFrom.value;
+                const to = ucTo.value;
+                if (isNaN(val)) {
+                    ucOutput.textContent = 'Invalid input'; return;
+                }
+                let result;
+                if (category === 'temperature') {
+                    let c;
+                    if (from === 'c') c = val;
+                    if (from === 'f') c = (val - 32) * 5/9;
+                    if (from === 'k') c = val - 273.15;
+                    if (to === 'c') result = c;
+                    if (to === 'f') result = c * 9/5 + 32;
+                    if (to === 'k') result = c + 273.15;
+                } else {
+                    result = val * from / to;
+                }
+                ucOutput.textContent = result.toFixed(5).replace(/\.?0+$/, '');
+            };
+            [ucCategory, ucInput, ucFrom, ucTo].forEach(el => el.addEventListener('change', convertUnits));
+            ucInput.addEventListener('input', convertUnits);
+            populateUnits();
+            
+            // 3. Text Utilities
+            const textUtilInput = q('text-utilities', '#text-util-input');
+            const updateTextCounts = () => {
+                const text = textUtilInput.value;
+                q('text-utilities', '#word-count').textContent = (text.match(/\S+/g) || []).length;
+                q('text-utilities', '#char-count').textContent = text.length;
+            };
+            textUtilInput.addEventListener('input', updateTextCounts);
+            q('text-utilities', '.button-group').addEventListener('click', (e) => {
+                if (e.target.tagName !== 'BUTTON') return;
+                const action = e.target.dataset.action;
+                let text = textUtilInput.value;
+                if (action === 'upper') text = text.toUpperCase();
+                if (action === 'lower') text = text.toLowerCase();
+                if (action === 'no-space') text = text.replace(/\s+/g, '');
+                textUtilInput.value = text;
+                updateTextCounts();
+            });
+
+            // 4. Base64
+            const base64Input = q('base64', '#base64-input');
+            const base64Output = q('base64', '#base64-output');
+            const base64Status = q('base64', '#base64-status');
+            const showBase64Status = (msg, type) => {
+                base64Status.textContent = msg;
+                base64Status.className = `status-message ${type}`;
+            };
+            q('base64', '#base64-encode').addEventListener('click', () => {
+                try {
+                    base64Output.value = btoa(unescape(encodeURIComponent(base64Input.value)));
+                    showBase64Status('Encoded successfully!', 'success');
+                } catch {
+                    showBase64Status('Failed to encode.', 'error');
+                }
+            });
+            q('base64', '#base64-decode').addEventListener('click', () => {
+                try {
+                    base64Output.value = decodeURIComponent(escape(atob(base64Input.value)));
+                     showBase64Status('Decoded successfully!', 'success');
+                } catch {
+                     showBase64Status('Invalid Base64 string.', 'error');
+                }
+            });
+
+            // 5. URL Encoder
+            const urlInput = q('url-encoder', '#url-input');
+            const urlOutput = q('url-encoder', '#url-output');
+            q('url-encoder', '#url-encode').addEventListener('click', () => urlOutput.value = encodeURIComponent(urlInput.value));
+            q('url-encoder', '#url-decode').addEventListener('click', () => {
+                try { urlOutput.value = decodeURIComponent(urlInput.value); } 
+                catch { urlOutput.value = 'Invalid URL string.'; }
+            });
+
+            // 6. JSON Formatter
+            const jsonInput = q('json-formatter', '#json-input');
+            const jsonStatus = q('json-formatter', '#json-status');
+            const jsonOutputPre = q('json-formatter', '#json-output-pre');
+            const jsonOutput = q('json-formatter', '#json-output');
+            jsonInput.addEventListener('input', () => {
+                const text = jsonInput.value.trim();
+                if (!text) {
+                    jsonStatus.className = 'status-message hidden';
+                    jsonOutputPre.classList.add('hidden');
+                    return;
+                }
+                try {
+                    const parsed = JSON.parse(text);
+                    jsonOutput.textContent = JSON.stringify(parsed, null, 2);
+                    jsonStatus.textContent = 'Valid JSON';
+                    jsonStatus.className = 'status-message success';
+                    jsonOutputPre.classList.remove('hidden');
+                } catch (e) {
+                    jsonStatus.textContent = `Invalid JSON: ${e.message}`;
+                    jsonStatus.className = 'status-message error';
+                    jsonOutputPre.classList.add('hidden');
+                }
+            });
+
+            // 7. Password Generator
+            const passOutput = q('password-generator', '#password-output');
+            const passLength = q('password-generator', '#pass-length');
+            const passLengthVal = q('password-generator', '#pass-length-val');
+            const optUpper = q('password-generator', '#opt-upper');
+            const optLower = q('password-generator', '#opt-lower');
+            const optNumbers = q('password-generator', '#opt-numbers');
+            const optSymbols = q('password-generator', '#opt-symbols');
+            const chars = {
+                upper: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+                lower: 'abcdefghijklmnopqrstuvwxyz',
+                numbers: '0123456789',
+                symbols: '!@#$%^&*()_+-=[]{}|;:,.<>?'
+            };
+            const generatePassword = () => {
+                let charset = '';
+                if (optUpper.checked) charset += chars.upper;
+                if (optLower.checked) charset += chars.lower;
+                if (optNumbers.checked) charset += chars.numbers;
+                if (optSymbols.checked) charset += chars.symbols;
+                if (charset === '') {
+                    passOutput.textContent = 'Select at least one option';
+                    return;
+                }
+                let password = '';
+                for (let i = 0; i < passLength.value; i++) {
+                    password += charset.charAt(Math.floor(Math.random() * charset.length));
+                }
+                passOutput.textContent = password;
+            };
+            passLength.addEventListener('input', () => passLengthVal.textContent = passLength.value);
+            q('password-generator', '#generate-password-btn').addEventListener('click', generatePassword);
+            q('password-generator', '#password-copy-btn').addEventListener('click', () => navigator.clipboard.writeText(passOutput.textContent));
+            generatePassword();
+            
+            // 8. UUID Generator
+            const uuidOutput = q('uuid-generator', '#uuid-output');
+            const generateUuid = () => uuidOutput.textContent = crypto.randomUUID();
+            q('uuid-generator', '#generate-uuid-btn').addEventListener('click', generateUuid);
+            q('uuid-generator', '#uuid-copy-btn').addEventListener('click', () => navigator.clipboard.writeText(uuidOutput.textContent));
+            generateUuid();
+            
+            // 9. Hash Generator
+            const hashInput = q('hash-generator', '#hash-input');
+            const hashOutput = q('hash-generator', '#hash-output');
+            hashInput.addEventListener('input', async () => {
+                const text = hashInput.value;
+                if (!text) {
+                    hashOutput.textContent = 'Output will appear here';
+                    return;
+                }
+                const msgUint8 = new TextEncoder().encode(text);
+                const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+                hashOutput.textContent = hashHex;
+            });
+            
+            // 10. Image Resizer
+            const imageInput = q('image-resizer', '#image-input');
+            const imagePreview = q('image-resizer', '#image-preview');
+            const placeholderText = q('image-resizer', '#image-placeholder-text');
+            const imageOptions = q('image-resizer', '#image-options');
+            const maxDimInput = q('image-resizer', '#img-max-dim');
+            const qualityInput = q('image-resizer', '#img-quality');
+            const qualityVal = q('image-resizer', '#img-quality-val');
+            const imageInfo = q('image-resizer', '#image-info');
+            const downloadBtn = q('image-resizer', '#download-image-btn');
+            let originalFile;
+            
+            const processImage = () => {
+                if (!originalFile) return;
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        const maxDim = parseInt(maxDimInput.value);
+                        let w = img.width;
+                        let h = img.height;
+                        if (w > h) {
+                            if (w > maxDim) { h *= maxDim / w; w = maxDim; }
+                        } else {
+                            if (h > maxDim) { w *= maxDim / h; h = maxDim; }
+                        }
+                        canvas.width = w;
+                        canvas.height = h;
+                        ctx.drawImage(img, 0, 0, w, h);
+                        const quality = parseFloat(qualityInput.value);
+                        const dataUrl = canvas.toDataURL(originalFile.type, quality);
+                        const newSize = Math.round(atob(dataUrl.split(',')[1]).length / 1024);
+                        imageInfo.textContent = `Original: ${Math.round(originalFile.size / 1024)} KB. New: ${newSize} KB.`;
+                        downloadBtn.href = dataUrl;
+                        downloadBtn.classList.remove('hidden');
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(originalFile);
+            };
+
+            imageInput.addEventListener('change', (e) => {
+                originalFile = e.target.files[0];
+                if (!originalFile) return;
+                imagePreview.src = URL.createObjectURL(originalFile);
+                imagePreview.style.display = 'block';
+                placeholderText.style.display = 'none';
+                imageOptions.classList.remove('hidden');
+                processImage();
+            });
+            [maxDimInput, qualityInput].forEach(el => el.addEventListener('input', processImage));
+            qualityInput.addEventListener('input', () => qualityVal.textContent = qualityInput.value);
+            
+            // 11. Color Tool
+            const colorText = q('color-tool', '#color-text');
+            const colorBg = q('color-tool', '#color-bg');
+            const contrastPreview = q('color-tool', '#contrast-preview');
+            const contrastOutput = q('color-tool', '#contrast-output');
+            const getLuminance = (hex) => {
+                const rgb = parseInt(hex.slice(1), 16);
+                let r = (rgb >> 16) & 0xff;
+                let g = (rgb >>  8) & 0xff;
+                let b = (rgb >>  0) & 0xff;
+                [r, g, b] = [r, g, b].map(v => {
+                    v /= 255;
+                    return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+                });
+                return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+            };
+            const checkContrast = () => {
+                const L1 = getLuminance(colorText.value);
+                const L2 = getLuminance(colorBg.value);
+                const ratio = L1 > L2 ? (L1 + 0.05) / (L2 + 0.05) : (L2 + 0.05) / (L1 + 0.05);
+                contrastPreview.style.backgroundColor = colorBg.value;
+                contrastPreview.style.color = colorText.value;
+                
+                let ratingAA = ratio >= 4.5 ? '<span style="color:var(--success)">Pass</span>' : '<span style="color:var(--error)">Fail</span>';
+                let ratingAAA = ratio >= 7 ? '<span style="color:var(--success)">Pass</span>' : '<span style="color:var(--error)">Fail</span>';
+                contrastOutput.innerHTML = `Ratio: <strong>${ratio.toFixed(2)}:1</strong> | AA: ${ratingAA} | AAA: ${ratingAAA}`;
+            };
+            [colorText, colorBg].forEach(el => el.addEventListener('input', checkContrast));
+            checkContrast();
+            
+            // 12. Stopwatch & Timer
+            const tabs = q('stopwatch-timer', '.timer-tabs');
+            const panels = q('stopwatch-timer', '.timer-panel', true); // Helper true for querySelectorAll
+            tabs.addEventListener('click', (e) => {
+                if (e.target.classList.contains('timer-tab')) {
+                    tabs.querySelector('.active').classList.remove('active');
+                    e.target.classList.add('active');
+                    panels.forEach(p => p.classList.remove('active'));
+                    q('stopwatch-timer', `#${e.target.dataset.tab}-panel`).classList.add('active');
+                }
+            });
+
+            // Stopwatch logic
+            let swInterval, swStartTime, swElapsedTime = 0;
+            const swDisplay = q('stopwatch-timer', '#stopwatch-display');
+            const swStartPause = q('stopwatch-timer', '#sw-start-pause');
+            const swReset = q('stopwatch-timer', '#sw-reset');
+            const swLap = q('stopwatch-timer', '#sw-lap');
+            const lapsContainer = q('stopwatch-timer', '#laps-container');
+            const formatTime = (ms) => {
+                const date = new Date(ms);
+                const m = String(date.getUTCMinutes()).padStart(2,'0');
+                const s = String(date.getUTCSeconds()).padStart(2,'0');
+                const milli = String(date.getUTCMilliseconds()).padStart(3,'0');
+                return `${m}:${s}.${milli}`;
+            };
+            swStartPause.addEventListener('click', () => {
+                if (swStartPause.textContent === 'Start') {
+                    swStartTime = Date.now() - swElapsedTime;
+                    swInterval = setInterval(() => {
+                        swElapsedTime = Date.now() - swStartTime;
+                        swDisplay.textContent = formatTime(swElapsedTime);
+                    }, 10);
+                    swStartPause.textContent = 'Pause';
+                } else {
+                    clearInterval(swInterval);
+                    swStartPause.textContent = 'Start';
+                }
+            });
+            swReset.addEventListener('click', () => {
+                clearInterval(swInterval);
+                swElapsedTime = 0;
+                swDisplay.textContent = formatTime(0);
+                swStartPause.textContent = 'Start';
+                lapsContainer.innerHTML = '';
+            });
+            swLap.addEventListener('click', () => {
+                if(swInterval) {
+                    const lapTime = document.createElement('div');
+                    lapTime.textContent = `Lap ${lapsContainer.children.length + 1}: ${formatTime(swElapsedTime)}`;
+                    lapsContainer.prepend(lapTime);
+                }
+            });
+
+            // Countdown logic
+            let cdInterval, cdTotalSeconds = 0, cdRunning = false;
+            const cdDisplay = q('stopwatch-timer', '#countdown-display');
+            const cdInputsContainer = q('stopwatch-timer', '#countdown-inputs');
+            const [cdHours, cdMinutes, cdSeconds] = [q('stopwatch-timer','#cd-hours'), q('stopwatch-timer','#cd-minutes'), q('stopwatch-timer','#cd-seconds')];
+            const cdStartPause = q('stopwatch-timer', '#cd-start-pause');
+            const cdReset = q('stopwatch-timer', '#cd-reset');
+            const formatCountdown = (s) => {
+                const h = String(Math.floor(s / 3600)).padStart(2,'0');
+                const m = String(Math.floor((s % 3600) / 60)).padStart(2,'0');
+                const sec = String(s % 60).padStart(2,'0');
+                return `${h}:${m}:${sec}`;
+            };
+            cdStartPause.addEventListener('click', () => {
+                if (!cdRunning) {
+                    if (cdTotalSeconds === 0) {
+                        cdTotalSeconds = (parseInt(cdHours.value) || 0) * 3600 + (parseInt(cdMinutes.value) || 0) * 60 + (parseInt(cdSeconds.value) || 0);
+                    }
+                    if (cdTotalSeconds <= 0) return;
+                    cdRunning = true;
+                    cdStartPause.textContent = 'Pause';
+                    cdInputsContainer.style.display = 'none';
+                    cdInterval = setInterval(() => {
+                        cdTotalSeconds--;
+                        cdDisplay.textContent = formatCountdown(cdTotalSeconds);
+                        if (cdTotalSeconds <= 0) {
+                            clearInterval(cdInterval);
+                            cdRunning = false;
+                            cdStartPause.textContent = 'Start';
+                            cdInputsContainer.style.display = 'flex';
+                            cdDisplay.textContent = "Time's up!";
+                        }
+                    }, 1000);
+                } else {
+                    clearInterval(cdInterval);
+                    cdRunning = false;
+                    cdStartPause.textContent = 'Resume';
+                }
+            });
+            cdReset.addEventListener('click', () => {
+                clearInterval(cdInterval);
+                cdRunning = false;
+                cdTotalSeconds = 0;
+                [cdHours, cdMinutes, cdSeconds].forEach(i => i.value = '');
+                cdDisplay.textContent = '00:00:00';
+                cdStartPause.textContent = 'Start';
+                cdInputsContainer.style.display = 'flex';
+            });
+            
+            // 13. Quick Notes
+            const notesArea = q('quick-notes', '#quick-notes-area');
+            notesArea.value = localStorage.getItem('quickNotes') || '';
+            notesArea.addEventListener('input', () => {
+                localStorage.setItem('quickNotes', notesArea.value);
+            });
+        }
+    });
+    </script>
+
+</body>
+</html>
